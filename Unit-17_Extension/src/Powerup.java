@@ -42,6 +42,7 @@ public class Powerup extends MovingThing {
 	public void shipCollect(Ship ship) {
 		//collision between ship and powerup values
 		if(this.getX()+50 > ship.getX() && this.getX()-50 < ship.getX() && this.getY()+50 > ship.getY() && this.getY()-50 < ship.getY()) {
+			ship.collectPowerUp();
 			collected = true;
 		}
 	}

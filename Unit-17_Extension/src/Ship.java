@@ -52,6 +52,18 @@ public class Ship extends MovingThing
 	   //add more code
 		speed = s;
 	}
+	
+	public void collectPowerUp() {
+		try
+		{
+			URL url = getClass().getResource("ship.jpgWithShield.jpg");
+			image = ImageIO.read(url);
+		}
+		catch(Exception e)
+		{
+			//feel free to do something here
+		}
+	}
 
 	public int getSpeed()
 	{

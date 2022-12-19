@@ -19,13 +19,12 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 	private Ship ship;
 	private Bullets bullets;
 	private AlienHorde horde;
+	
+	private Powerup pu;
+	private boolean spawnedPU;
 
-	/* uncomment once you are ready for this part
-	 *
-   private AlienHorde horde;
-	private Bullets shots;
-	*/
-
+	private boolean press;
+	
 	private boolean[] keys;
 	private BufferedImage back;
 
@@ -36,6 +35,9 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		keys = new boolean[5];
 		bullets = new Bullets();
 		horde = new AlienHorde(8);
+		pu = new Powerup();
+		spawnedPU = false;
+		press = true;       
 
 		//instantiate other instance variables
 		//Ship, Alien
@@ -75,6 +77,19 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		graphToBack.setColor(Color.BLACK);
 		graphToBack.fillRect(0,0,800,600);
 		
+		if(spawnedPU == false) {
+			spawnedPU = true;
+			pu.spawnPowerUp();
+		}
+		
+		if(pu != null) {
+			if(pu.isCollected()) {
+				pu=null;
+			}
+			pu.draw(window);
+			pu.shipCollect(ship);
+		}
+
 		//add code to move Ship, Alien, etc.
 		if(keys[0] == true) {
 			ship.move("left");
@@ -92,10 +107,10 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 			ship.move("down");
 			ship.draw(window);
 		}
-		if(keys[4] == true) {
+		if(keys[4] == true && press) {
 			Ammo shot = new Ammo(ship.getX()+20,ship.getY(),3);
 			bullets.add(shot);
-			keys[4] = false;
+			press = false;
 		}
 		
 		bullets.drawEmAll(graphToBack);
@@ -157,6 +172,7 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		if (e.getKeyCode() == KeyEvent.VK_SPACE)
 		{
 			keys[4] = false;
+			press = true;
 		}
 		repaint();
 	}
