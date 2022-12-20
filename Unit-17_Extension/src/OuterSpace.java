@@ -78,15 +78,15 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		graphToBack.fillRect(0,0,800,600);
 		
 		if(spawnedPU == false) {
-			spawnedPU = true;
 			pu.spawnPowerUp();
+			spawnedPU = true;
 		}
 		
 		if(pu != null) {
 			if(pu.isCollected()) {
 				pu=null;
 			}
-			pu.draw(window);
+			pu.draw(graphToBack);
 			pu.shipCollect(ship);
 		}
 
