@@ -42,23 +42,31 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		keys = new boolean[5];
 		bullets = new Bullets();
 		horde = new AlienHorde(8);
+		
+		//initializes the powerup as well as the timer required for the powerup to spawn
 		pu = new Powerup();
 		puPlaceTimer = new Timer();
-		shipHasPU = new Timer();
 		puPlacement = new TimerTask() {
 			public void run() {
 				if(pu != null) {
-					pu.spawnPowerUp();
-					spawnedPU = true;
+					if(!spawnedPU) {
+						pu.spawnPowerUp();
+						spawnedPU = true;
+					}
 				}
 			}
 		};
+		
+		//initializes the timer for the duration of the powerup
+		shipHasPU = new Timer();
 		puDuration = new TimerTask() {
 			public void run() {
 				ship.removePowerUp();
 				hasPU = false;
 			}
 		};
+		
+		//initializes the booleans for the powerup logic
 		spawnedPU = false;
 		hasPU = false;
 		press = true;       
@@ -102,6 +110,7 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		graphToBack.setColor(Color.BLACK);
 		graphToBack.fillRect(0,0,800,600);
 		
+		//code to implement once powerup actually spawns
 		if(pu != null) {
 			pu.shipCollect(ship);
 			if(pu.isCollected()) {
