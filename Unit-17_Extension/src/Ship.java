@@ -65,6 +65,18 @@ public class Ship extends MovingThing
 		}
 	}
 
+	public void removePowerUp() {
+		try
+		{
+			URL url = getClass().getResource("ship.jpg");
+			image = ImageIO.read(url);
+		}
+		catch(Exception e)
+		{
+			//feel free to do something here
+		}
+	}
+	
 	public int getSpeed()
 	{
 	   return speed;

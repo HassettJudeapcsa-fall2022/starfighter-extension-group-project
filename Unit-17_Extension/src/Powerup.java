@@ -48,7 +48,7 @@ public class Powerup extends MovingThing {
 	}
 	
 	public void spawnPowerUp() {
-		this.setPos((int)(Math.random()*375)+375, (int)(Math.random()*262)+262);
+		this.setPos((int)(Math.random()*750), (int)(Math.random()*262)+262);
 	}
 	
 	public boolean isCollected() {

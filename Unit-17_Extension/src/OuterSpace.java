@@ -13,6 +13,8 @@ import static java.lang.Character.*;
 import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class OuterSpace extends Canvas implements KeyListener, Runnable
 {
@@ -21,7 +23,12 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 	private AlienHorde horde;
 	
 	private Powerup pu;
+	private Timer puPlaceTimer;
+	private TimerTask puPlacement;
+	private Timer shipHasPU;
+	private TimerTask puDuration;
 	private boolean spawnedPU;
+	private boolean hasPU;
 
 	private boolean press;
 	
@@ -36,17 +43,35 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		bullets = new Bullets();
 		horde = new AlienHorde(8);
 		pu = new Powerup();
+		puPlaceTimer = new Timer();
+		shipHasPU = new Timer();
+		puPlacement = new TimerTask() {
+			public void run() {
+				if(pu != null) {
+					pu.spawnPowerUp();
+					spawnedPU = true;
+				}
+			}
+		};
+		puDuration = new TimerTask() {
+			public void run() {
+				ship.removePowerUp();
+				hasPU = false;
+			}
+		};
 		spawnedPU = false;
+		hasPU = false;
 		press = true;       
 
 		//instantiate other instance variables
 		//Ship, Alien
 		ship = new Ship(400, 450, 50, 50, 5);
 		for(int i = 0, x=10; i < 8; i++) {
-			horde.add(new Alien(x,10,50,50,2));
+			horde.add(new Alien(x,10,50,50,1));
 			x+=50;
 		}
-
+		puPlaceTimer.scheduleAtFixedRate(puPlacement, 0, 3000);
+		
 		this.addKeyListener(this);
 		new Thread(this).start();
 
@@ -77,17 +102,20 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		graphToBack.setColor(Color.BLACK);
 		graphToBack.fillRect(0,0,800,600);
 		
-		if(spawnedPU == false) {
-			pu.spawnPowerUp();
-			spawnedPU = true;
-		}
-		
 		if(pu != null) {
+			pu.shipCollect(ship);
 			if(pu.isCollected()) {
+				hasPU = true;
+				spawnedPU = false;
 				pu=null;
 			}
-			pu.draw(graphToBack);
-			pu.shipCollect(ship);
+			if(spawnedPU == true) {
+				pu.draw(graphToBack);
+			}
+			
+			if(hasPU) {
+				shipHasPU.schedule(puDuration, 9000);
+			}
 		}
 
 		//add code to move Ship, Alien, etc.
