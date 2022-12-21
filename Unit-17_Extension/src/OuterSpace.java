@@ -29,6 +29,7 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 	private TimerTask puDuration;
 	private boolean spawnedPU;
 	private boolean hasPU;
+	private boolean isDead;
 
 	private boolean press;
 	
@@ -41,7 +42,7 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 
 		keys = new boolean[5];
 		bullets = new Bullets();
-		horde = new AlienHorde(8);
+		horde = new AlienHorde(14);
 		pu = new Powerup();
 		//initializes the powerup as well as the timer required for the powerup to spawn
 		puPlaceTimer = new Timer();
@@ -73,11 +74,15 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		//instantiate other instance variables
 		//Ship, Alien
 		ship = new Ship(400, 450, 50, 50, 2);
-		for(int i = 0, x=10; i < 8; i++) {
+		for(int i = 0, x=10; i < 14; i++) {
 			horde.add(new Alien(x,10,50,50,1));
 			x+=50;
 		}
-		puPlaceTimer.scheduleAtFixedRate(puPlacement, 3000, 3000);
+		
+		//set timer for when powerup is placed
+		puPlaceTimer.schedule(puPlacement, 1000);
+		
+		isDead = false;
 		
 		this.addKeyListener(this);
 		new Thread(this).start();
@@ -87,7 +92,9 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 
    public void update(Graphics window)
    {
-	   paint(window);
+	   if(!isDead) {
+		   paint(window);
+	   }
    }
 
 	public void paint( Graphics window )
@@ -121,9 +128,20 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 				pu.draw(graphToBack);
 			}
 			
+			//determines the duration of the powerup while hasPU is true
 			if(hasPU) {
-				shipHasPU.schedule(puDuration, 9000);
+				shipHasPU.schedule(puDuration, 3000);
 			}
+		}
+		
+		/*
+		 if("collision with alien or alien bullet" && hasPU == false){
+		 	isDead = true;
+		 }
+		  */
+		
+		if(isDead = true) {
+			//draw game over image over whole window
 		}
 
 		//add code to move Ship, Alien, etc.
