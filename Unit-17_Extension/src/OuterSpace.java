@@ -42,9 +42,8 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		keys = new boolean[5];
 		bullets = new Bullets();
 		horde = new AlienHorde(8);
-		
-		//initializes the powerup as well as the timer required for the powerup to spawn
 		pu = new Powerup();
+		//initializes the powerup as well as the timer required for the powerup to spawn
 		puPlaceTimer = new Timer();
 		puPlacement = new TimerTask() {
 			public void run() {
@@ -73,12 +72,12 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 
 		//instantiate other instance variables
 		//Ship, Alien
-		ship = new Ship(400, 450, 50, 50, 5);
+		ship = new Ship(400, 450, 50, 50, 2);
 		for(int i = 0, x=10; i < 8; i++) {
 			horde.add(new Alien(x,10,50,50,1));
 			x+=50;
 		}
-		puPlaceTimer.scheduleAtFixedRate(puPlacement, 0, 3000);
+		puPlaceTimer.scheduleAtFixedRate(puPlacement, 3000, 3000);
 		
 		this.addKeyListener(this);
 		new Thread(this).start();
