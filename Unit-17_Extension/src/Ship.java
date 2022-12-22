@@ -4,6 +4,7 @@
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -37,7 +38,7 @@ public class Ship extends MovingThing
 		speed=s;
 		try
 		{
-			URL url = getClass().getResource("ship.jpg");
+			URL url = getClass().getResource("ship.png");
 			image = ImageIO.read(url);
 		}
 		catch(Exception e)
@@ -56,7 +57,7 @@ public class Ship extends MovingThing
 	public void collectPowerUp() {
 		try
 		{
-			URL url = getClass().getResource("ship.jpgWithShield.jpg");
+			URL url = getClass().getResource("shipWithShield.png");
 			image = ImageIO.read(url);
 		}
 		catch(Exception e)
@@ -68,7 +69,7 @@ public class Ship extends MovingThing
 	public void removePowerUp() {
 		try
 		{
-			URL url = getClass().getResource("ship.jpg");
+			URL url = getClass().getResource("ship.png");
 			image = ImageIO.read(url);
 		}
 		catch(Exception e)
@@ -105,6 +106,17 @@ public class Ship extends MovingThing
 				setY(getY()+speed);
 			}
 		}
+	}
+	
+	public boolean isCollide(List<AlienAmmo> alienAmmo)
+	{
+		for (int i = 0; i < alienAmmo.size(); i++) {
+			AlienAmmo ammo = alienAmmo.get(i);
+			if (ammo.getY()+ammo.getHeight() > getY() && ammo.getY() < getY() + getHeight() && ammo.getX() > getX() && ammo.getX() < getX()+getWidth()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void draw( Graphics window )

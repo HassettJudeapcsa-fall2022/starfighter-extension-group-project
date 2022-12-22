@@ -49,6 +49,11 @@ public class AlienHorde
 			}
 		}
 	}
+	
+	public List<Alien> getList()
+	{
+		return aliens;
+	}
 
 	public String toString()
 	{

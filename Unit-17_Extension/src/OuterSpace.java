@@ -5,16 +5,20 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Canvas;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import static java.lang.Character.*;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.imageio.ImageIO;
 
 public class OuterSpace extends Canvas implements KeyListener, Runnable
 {
@@ -30,14 +34,29 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 	private boolean spawnedPU;
 	private boolean hasPU;
 	private boolean isDead;
+	
+	private AlienBullets alienBullets;
+	private Timer shootTimer;
+	private TimerTask shoot;
 
 	private boolean press;
 	
 	private boolean[] keys;
 	private BufferedImage back;
+	
+	private Image gameOver;
 
 	public OuterSpace()
 	{
+		try
+		{
+			URL url = getClass().getResource("gameover.jpg");
+			gameOver = ImageIO.read(url);
+		}
+		catch(Exception e)
+		{
+			//feel free to do something here
+		}
 		setBackground(Color.black);
 
 		keys = new boolean[5];
@@ -70,6 +89,19 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		spawnedPU = false;
 		hasPU = false;
 		press = true;       
+		
+		shootTimer = new Timer();
+		alienBullets = new AlienBullets();
+		
+		shoot = new TimerTask() {
+			public void run() {
+				Alien guy = horde.getList().get((int)(Math.random()*(horde.getList().size())));
+				AlienAmmo shot = new AlienAmmo(guy.getX(), guy.getY());
+				alienBullets.add(shot);
+			}
+		};
+		
+		shootTimer.scheduleAtFixedRate(shoot, 1000, 200);
 
 		//instantiate other instance variables
 		//Ship, Alien
@@ -133,16 +165,6 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 				shipHasPU.schedule(puDuration, 3000);
 			}
 		}
-		
-		/*
-		 if("collision with alien or alien bullet" && hasPU == false){
-		 	isDead = true;
-		 }
-		  */
-		
-		if(isDead = true) {
-			//draw game over image over whole window
-		}
 
 		//add code to move Ship, Alien, etc.
 		if(keys[0] == true) {
@@ -170,6 +192,10 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		bullets.drawEmAll(graphToBack);
 		bullets.moveEmAll();
 		bullets.cleanEmUp();
+		
+		alienBullets.drawEmAll(graphToBack);
+		alienBullets.moveEmAll();
+		alienBullets.cleanEmUp();
 
 		//add in collision detection to see if Bullets hit the Aliens and if Bullets hit the Ship
 		horde.drawEmAll(graphToBack);
@@ -177,6 +203,11 @@ public class OuterSpace extends Canvas implements KeyListener, Runnable
 		horde.removeDeadOnes(bullets.getList());
 		ship.draw(graphToBack);
 		twoDGraph.drawImage(back, null, 0, 0);
+		
+		if(ship.isCollide(alienBullets.getList()) && hasPU == false){
+			window.drawImage(gameOver,0,0,800,600,null);
+		 	isDead = true;
+		}
 	}
 
 

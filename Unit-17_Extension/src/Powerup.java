@@ -25,7 +25,7 @@ public class Powerup extends MovingThing {
 		//grabs image from url
 		try
 		{
-			URL url = getClass().getResource("pu.jpg");
+			URL url = getClass().getResource("pu.png");
 			image = ImageIO.read(url);
 		}
 		catch(Exception e)
